@@ -4,11 +4,15 @@ import type { HttpContext } from '@adonisjs/core/http'
 
 export default class AuthController {
     async login({ request }: HttpContext) {
-        const payload = await loginValidator.validate(request.all())
-        return payload
+        const payload = await request.validateUsing(loginValidator)
+
+        const user = await User.verifyCredentials(payload.email, payload.password)
+        const token = await User.accessTokens.create(user)
+
+        return token
     }
 
-    async registger({ request, response }: HttpContext) {
+    async register({ request, response }: HttpContext) {
         const payload = await request.validateUsing(registerValidator)
         const userExists = await User.findBy('email', payload.email)
 
@@ -27,5 +31,11 @@ export default class AuthController {
 
     logout() {}
 
-    me() {}
+    me({ auth }: HttpContext) {
+        const user = auth.getUserOrFail()
+
+        return {
+            data: user,
+        }
+    }
 }
