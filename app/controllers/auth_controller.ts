@@ -9,7 +9,9 @@ export default class AuthController {
         const user = await User.verifyCredentials(payload.email, payload.password)
         const token = await User.accessTokens.create(user)
 
-        return token
+        return {
+            data: token,
+        }
     }
 
     async register({ request, response }: HttpContext) {
@@ -26,7 +28,9 @@ export default class AuthController {
             firstName: payload.firstName,
             lastName: payload.lastName,
         })
-        return newUser
+        return {
+            data: newUser,
+        }
     }
 
     logout() {}
