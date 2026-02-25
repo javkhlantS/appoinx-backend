@@ -33,7 +33,15 @@ export default class AuthController {
         }
     }
 
-    logout() {}
+    async logout({ auth }: HttpContext) {
+        await User.accessTokens.deleteAll(auth.getUserOrFail())
+
+        return {
+            data: {
+                success: true,
+            },
+        }
+    }
 
     me({ auth }: HttpContext) {
         const user = auth.getUserOrFail()
