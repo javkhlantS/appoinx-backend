@@ -13,7 +13,7 @@ export default class AuthController {
         const userExists = await User.findBy('email', payload.email)
 
         if (userExists) {
-            response.abort({ message: 'User with email already exists', status: 400 }, 400)
+            response.abort({ message: 'User with email already exists' }, 400)
         }
 
         const newUser = await User.create({
